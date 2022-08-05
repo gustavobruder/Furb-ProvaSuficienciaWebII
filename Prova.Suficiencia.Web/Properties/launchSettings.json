@@ -18,10 +18,12 @@
     "Prova.Suficiencia.Web": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
-      "launchBrowser": true,
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:8080",
+      "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "POSTGRESQL_DATABASE_CONNECTION_STRING": "Host=localhost;Port=5432;Pooling=true;Database=ComandasDb;User Id=postgres;Password=postgres;"
       }
     }
   }

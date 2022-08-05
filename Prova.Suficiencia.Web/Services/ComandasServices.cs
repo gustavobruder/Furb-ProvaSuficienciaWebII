@@ -103,7 +103,7 @@ namespace Prova.Suficiencia.Web.Services
 
                     if (comandaProduto == null)
                     {
-                        if (modelProduto.Nome != null && modelProduto.Preco != null )
+                        if (modelProduto.Nome != null && modelProduto.Preco != null)
                         {
                             comandaProduto = new Produto
                             {
