@@ -12,7 +12,7 @@ namespace Prova.Suficiencia.Web.Database.Mappings
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).HasColumnName("id").IsRequired();
-            builder.Property(x => x.IdUsuario).HasColumnName("nome_usuario").IsRequired();
+            builder.Property(x => x.IdUsuario).HasColumnName("id_usuario").IsRequired();
             builder.Property(x => x.NomeUsuario).HasColumnName("nome_usuario").IsRequired();
             builder.Property(x => x.TelefoneUsuario).HasColumnName("telefone_usuario").IsRequired();
 
