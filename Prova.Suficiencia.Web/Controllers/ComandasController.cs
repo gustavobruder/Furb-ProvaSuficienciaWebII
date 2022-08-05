@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Prova.Suficiencia.Web.Models;
 using Prova.Suficiencia.Web.Services;
@@ -7,6 +8,7 @@ using Prova.Suficiencia.Web.Views;
 
 namespace Prova.Suficiencia.Web.Controllers
 {
+    [Authorize]
     public class ComandasController : ApiController
     {
         private readonly IComandasServices _comandasServices;

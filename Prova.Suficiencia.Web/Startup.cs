@@ -1,15 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Prova.Suficiencia.Web.DAOs;
-using Prova.Suficiencia.Web.Database;
 using Prova.Suficiencia.Web.Services;
 
 namespace Prova.Suficiencia.Web
@@ -21,14 +14,12 @@ namespace Prova.Suficiencia.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSwaggerGen();
 
-            services.AddDbContext<DatabaseContext>(options =>
-            {
-                var connectionString = Environment.GetEnvironmentVariable("POSTGRESQL_DATABASE_CONNECTION_STRING");
-                options.UseNpgsql(connectionString!);
-            });
+            services.AddSwaggerConfiguration();
+            services.AddAuthenticationConfiguration();
+            services.AddDatabaseConfiguration();
 
+            services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IComandasServices, ComandasServices>();
             services.AddTransient<IComandasDAO, ComandasDAO>();
         }
@@ -43,6 +34,9 @@ namespace Prova.Suficiencia.Web
 
             app.UseRouting();
             app.UseStaticFiles();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseSwagger();
             app.UseSwaggerUI();
