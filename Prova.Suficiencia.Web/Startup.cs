@@ -28,6 +28,7 @@ namespace Prova.Suficiencia.Web
 
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IComandasServices, ComandasServices>();
+            services.AddTransient<IValidacoesService, ValidacoesService>();
             services.AddTransient<IComandasDAO, ComandasDAO>();
         }
 

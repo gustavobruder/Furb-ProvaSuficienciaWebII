@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Prova.Suficiencia.Web.DAOs;
 using Prova.Suficiencia.Web.Entities;
-using Prova.Suficiencia.Web.Exceptions;
 using Prova.Suficiencia.Web.Models;
 using Prova.Suficiencia.Web.Views;
 
@@ -12,10 +11,12 @@ namespace Prova.Suficiencia.Web.Services
     public class ComandasServices : IComandasServices
     {
         private readonly IComandasDAO _comandasDao;
+        private readonly IValidacoesService _validacoesService;
 
-        public ComandasServices(IComandasDAO comandasDao)
+        public ComandasServices(IComandasDAO comandasDao, IValidacoesService validacoesService)
         {
             _comandasDao = comandasDao;
+            _validacoesService = validacoesService;
         }
 
         public async Task<IList<ListagemComandaViewModel>> ListarComandas()
@@ -36,8 +37,7 @@ namespace Prova.Suficiencia.Web.Services
         {
             var comanda = await _comandasDao.ObterComandaParaDetalhes(id);
 
-            if (comanda == null)
-                throw new EntidadeNaoEncontradaException($"Comanda {id} não encontrada");
+            _validacoesService.ValidarSeExiste(id, comanda);
 
             return new DetalhesComandaViewModel
             {
@@ -57,6 +57,8 @@ namespace Prova.Suficiencia.Web.Services
 
         public async Task<CadastroComandaViewModel> CadastrarComanda(CadastroComandaModel model)
         {
+            _validacoesService.ValidarCamposCadastro(model);
+
             var comanda = new Comanda
             {
                 IdUsuario = model.IdUsuario,
@@ -95,37 +97,35 @@ namespace Prova.Suficiencia.Web.Services
         {
             var comanda = await _comandasDao.ObterComanda(id);
 
-            if (comanda == null)
-                throw new EntidadeNaoEncontradaException($"Comanda {id} não encontrada");
+            _validacoesService.ValidarSeExiste(id, comanda);
+            _validacoesService.ValidarCamposAtualizacaoUsuario(model);
 
             comanda.IdUsuario = model.IdUsuario ?? comanda.IdUsuario;
             comanda.NomeUsuario = model.NomeUsuario ?? comanda.NomeUsuario;
             comanda.TelefoneUsuario = model.TelefoneUsuario ?? comanda.TelefoneUsuario;
 
-            if (model.Produtos != null && model.Produtos.Any())
+            foreach (var modelProduto in model.Produtos ?? new List<AtualizacaoProdutoModel>())
             {
-                foreach (var modelProduto in model.Produtos)
-                {
-                    var comandaProduto = comanda.Produtos.FirstOrDefault(x => x.Id == modelProduto.Id);
+                var comandaProduto = comanda.Produtos.FirstOrDefault(x => x.Id == modelProduto.Id);
 
-                    if (comandaProduto == null)
+                if (comandaProduto == null)
+                {
+                    _validacoesService.ValidarCamposAtualizacaoProdutoInserir(modelProduto);
+
+                    comandaProduto = new Produto
                     {
-                        if (modelProduto.Nome != null && modelProduto.Preco != null)
-                        {
-                            comandaProduto = new Produto
-                            {
-                                Id = modelProduto.Id,
-                                Nome = modelProduto.Nome,
-                                Preco = (double) modelProduto.Preco,
-                            };
-                            comanda.Produtos.Add(comandaProduto);
-                        }
-                    }
-                    else
-                    {
-                        comandaProduto.Nome = modelProduto.Nome ?? comandaProduto.Nome;
-                        comandaProduto.Preco = modelProduto.Preco ?? comandaProduto.Preco;
-                    }
+                        Id = modelProduto.Id,
+                        Nome = modelProduto.Nome,
+                        Preco = (double) modelProduto.Preco,
+                    };
+                    comanda.Produtos.Add(comandaProduto);
+                }
+                else
+                {
+                    _validacoesService.ValidarCamposAtualizacaoProdutoAtualizar(modelProduto);
+
+                    comandaProduto.Nome = modelProduto.Nome ?? comandaProduto.Nome;
+                    comandaProduto.Preco = modelProduto.Preco ?? comandaProduto.Preco;
                 }
             }
 
@@ -136,8 +136,7 @@ namespace Prova.Suficiencia.Web.Services
         {
             var comanda = await _comandasDao.ObterComanda(id);
 
-            if (comanda == null)
-                throw new EntidadeNaoEncontradaException($"Comanda {id} não encontrada");
+            _validacoesService.ValidarSeExiste(id, comanda);
 
             await _comandasDao.RemoverComanda(comanda);
 

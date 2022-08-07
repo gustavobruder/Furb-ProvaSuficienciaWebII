@@ -16,6 +16,11 @@ namespace Prova.Suficiencia.Web.Models
 
         [JsonPropertyName("produtos")]
         public IList<CadastroProdutoModel> Produtos { get; set; }
+
+        public CadastroComandaModel()
+        {
+            Produtos = new List<CadastroProdutoModel>();
+        }
     }
 
     public class CadastroProdutoModel

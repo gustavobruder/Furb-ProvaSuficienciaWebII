@@ -16,6 +16,7 @@ namespace Prova.Suficiencia.Web.Exceptions
             var statusCode = exceptionHandlerFeature.Error switch
             {
                 EntidadeNaoEncontradaException => HttpStatusCode.NotFound,
+                ValidacaoException => HttpStatusCode.UnprocessableEntity,
                 _ => HttpStatusCode.InternalServerError,
             };
 
