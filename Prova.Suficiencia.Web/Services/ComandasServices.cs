@@ -91,7 +91,7 @@ namespace Prova.Suficiencia.Web.Services
             };
         }
 
-        public async Task<object> AtualizarComanda(int id, AtualizacaoComandaModel model)
+        public async Task AtualizarComanda(int id, AtualizacaoComandaModel model)
         {
             var comanda = await _comandasDao.ObterComanda(id);
 
@@ -130,8 +130,6 @@ namespace Prova.Suficiencia.Web.Services
             }
 
             await _comandasDao.AtualizarComanda(comanda);
-
-            return null;
         }
 
         public async Task<RemocaoComandaViewModel> RemoverComanda(int id)

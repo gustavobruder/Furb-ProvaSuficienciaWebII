@@ -10,7 +10,7 @@ namespace Prova.Suficiencia.Web.Services
         Task<IList<ListagemComandaViewModel>> ListarComandas();
         Task<DetalhesComandaViewModel> DetalharComanda(int id);
         Task<CadastroComandaViewModel> CadastrarComanda(CadastroComandaModel model);
-        Task<object> AtualizarComanda(int id, AtualizacaoComandaModel model);
+        Task AtualizarComanda(int id, AtualizacaoComandaModel model);
         Task<RemocaoComandaViewModel> RemoverComanda(int id);
     }
 }
