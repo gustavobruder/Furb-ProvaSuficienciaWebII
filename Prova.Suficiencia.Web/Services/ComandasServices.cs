@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Prova.Suficiencia.Web.DAOs;
 using Prova.Suficiencia.Web.Entities;
+using Prova.Suficiencia.Web.Exceptions;
 using Prova.Suficiencia.Web.Models;
 using Prova.Suficiencia.Web.Views;
 
@@ -34,6 +35,9 @@ namespace Prova.Suficiencia.Web.Services
         public async Task<DetalhesComandaViewModel> DetalharComanda(int id)
         {
             var comanda = await _comandasDao.ObterComandaParaDetalhes(id);
+
+            if (comanda == null)
+                throw new EntidadeNaoEncontradaException($"Comanda {id} não encontrada");
 
             return new DetalhesComandaViewModel
             {
@@ -91,6 +95,9 @@ namespace Prova.Suficiencia.Web.Services
         {
             var comanda = await _comandasDao.ObterComanda(id);
 
+            if (comanda == null)
+                throw new EntidadeNaoEncontradaException($"Comanda {id} não encontrada");
+
             comanda.IdUsuario = model.IdUsuario ?? comanda.IdUsuario;
             comanda.NomeUsuario = model.NomeUsuario ?? comanda.NomeUsuario;
             comanda.TelefoneUsuario = model.TelefoneUsuario ?? comanda.TelefoneUsuario;
@@ -130,6 +137,9 @@ namespace Prova.Suficiencia.Web.Services
         public async Task<RemocaoComandaViewModel> RemoverComanda(int id)
         {
             var comanda = await _comandasDao.ObterComanda(id);
+
+            if (comanda == null)
+                throw new EntidadeNaoEncontradaException($"Comanda {id} não encontrada");
 
             await _comandasDao.RemoverComanda(comanda);
 

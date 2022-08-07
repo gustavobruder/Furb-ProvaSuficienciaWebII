@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Prova.Suficiencia.Web.DAOs;
+using Prova.Suficiencia.Web.Exceptions;
 using Prova.Suficiencia.Web.Services;
 
 namespace Prova.Suficiencia.Web
@@ -14,6 +16,11 @@ namespace Prova.Suficiencia.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddExceptionHandler(options =>
+            {
+                options.ExceptionHandler = GlobalExceptionHandler.Handle;
+                options.AllowStatusCode404Response = true;
+            });
 
             services.AddSwaggerConfiguration();
             services.AddAuthenticationConfiguration();
@@ -31,6 +38,8 @@ namespace Prova.Suficiencia.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             app.UseRouting();
             app.UseStaticFiles();
